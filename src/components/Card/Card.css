@@ -1,0 +1,33 @@
+.card {
+  width: 400px;
+  box-shadow: 0px 0px 15px -5px #777777;
+  border-radius: 10px;
+  background-color: rgb(215, 242, 255);
+}
+
+.cardText{
+  padding: 0;
+  font-size: 18px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.cardDate{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  font-size: 12px;
+}
+
+.date{
+  background-color:rgb(227, 245, 254);;
+}
+
+.card:hover {
+  width: 400px;
+  box-shadow: 0px 0px 0px 0px #777777;
+  border-radius: 10px;
+  background-color: rgb(215, 242, 255);
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
