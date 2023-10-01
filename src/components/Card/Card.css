@@ -3,6 +3,7 @@
   box-shadow: 0px 0px 15px -5px #777777;
   border-radius: 10px;
   background-color: rgb(215, 242, 255);
+  position: relative;
 }
 
 .cardText{
@@ -14,12 +15,12 @@
 
 .cardDate{
   display:grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 0.3fr;
   font-size: 12px;
 }
 
 .date{
-  background-color:rgb(227, 245, 254);;
+  background-color:rgb(227, 245, 254);
 }
 
 .card:hover {
@@ -30,4 +31,38 @@
   display: block;
   margin-left: auto;
   margin-right: auto;
+}
+
+.delButton{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  background-color: rgb(254, 233, 233);
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0px 0px 15px -5px #777777;
+}
+
+.delButton:hover{
+  box-shadow: 0px 0px 0px 0px #777777;
+}
+
+.checkButton{
+  position: absolute;
+  right: 40px;
+  bottom: 0;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  background-color: rgb(196, 248, 204);
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0px 0px 15px -5px #777777;
+}
+
+.checkButton:hover{
+  box-shadow: 0px 0px 0px 0px #777777;
 }
