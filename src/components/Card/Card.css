@@ -4,6 +4,7 @@
   border-radius: 10px;
   background-color: rgb(215, 242, 255);
   position: relative;
+  table-layout: fixed;
 }
 
 .cardText{
@@ -11,6 +12,7 @@
   font-size: 18px;
   margin-bottom: 10px;
   margin-top: 10px;
+  overflow-wrap : break-word;
 }
 
 .cardDate{

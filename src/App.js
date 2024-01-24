@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import {getTodo,postTodo,delTodo} from './utils/todo'
+import {getTodo,postTodo,delTodo,getTodoTest} from './utils/todo'
 import React from 'react';
 import Card from './components/Card/Card';
 import Post from './components/Cors/PostTodo';
@@ -10,9 +10,9 @@ import "react-datepicker/dist/react-datepicker.css"
 import { MdDeleteOutline } from "react-icons/md";
 
 function App() {
-  const initialURL = "http://localhost:5273/api/TodoItems";
+  const initialURL = "https://todoapi20240124125933.azurewebsites.net/api/TodoItems";
   const Today = new Date();
-  const initialData = {
+const initialData = {
     completionDate: Today,
     todoText: null,
     completeDateTime: null,
@@ -20,6 +20,7 @@ function App() {
   }
 
   const [loading, setLoading] = useState(true);
+  const [errorMessage,setErrorMessage] = useState(null);
   const [todoData, setTodoData] = useState();
   const [completionDate, setCompletionDate] = useState(null);
   const [todoText, setTodoText] = useState('');
@@ -27,33 +28,32 @@ function App() {
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
-    const getTodoData = async() => {
-      //全てのtodoリストを取得
-      let res = await getTodo(initialURL);
-      //Todoごとの詳細のデータを取得。
-      setLoading(false);
-
-      switch (filter) {
-        case "complete":
-        setTodoData(
-          res.filter((todo) => {return todo.completeFlg})
-        );
-        console.log(res);
-        break;
-        case "incomplete":
-        setTodoData(
-          res.filter((todo) => {return !todo.completeFlg})
-        );
-        console.log(todoData);
-          break;
-        default:
-          setTodoData(res);
-
-      }
-
-    };
-    getTodoData();
+    getTodoTestData();
+    },[])
+  
+    useEffect(() => {
+  getTodoData();
   },[filter])
+
+  const getTodoTestData = async() => {
+    let res = await getTodoTest(`${initialURL}/test`);  
+    console.log(res);
+  };
+  
+  const getTodoData = async() => {
+    console.log(filter);  
+    setErrorMessage(null);
+    let res = await getTodo(`${initialURL}?filter=${filter}`);  
+    //Todoごとの詳細のデータを取得。
+    setLoading(false);
+
+    const status = res.status;
+    if (status) {
+      setErrorMessage("データが取得できませんでした。");
+    }else{
+      setTodoData(res)
+    }
+  };
 
   //作成モード
   const handleTodoCreate = () => {
@@ -63,26 +63,38 @@ function App() {
   };
 
   const postTodoData = async() => {
+    setErrorMessage(null)
+    if(todoText.length<=100){
     let res = await postTodo(initialURL,{
       id: 0,
       completionDate: completionDate,
       todoText: todoText,
       completeFlg: false,
       completeDateTime: null,
-    });
-    console.log(res);
-    handleTodoCreate();
-    //TODO： エラーの場合は追加しないように変更する必要あり。
-    setTodoData([
-      ...todoData,{
-        completionDate: completionDate,
-        todoText: todoText,
-        completeFlg: false
-      }
-    ])
+    })
+    //エラーの場合のみStatusが設定される。
+    const status = res.status;
+    if (status) {
+      setErrorMessage("入力内容が正しくありません。");
+    }else{
+      console.log("a");
+      handleTodoCreate();
+      setTodoData([
+        ...todoData,{
+          completionDate: completionDate,
+          todoText: todoText,
+          completeFlg: false
+        }
+      ]);
+    }
+  }else{
+      setErrorMessage("100文字以内に修正してください。");
+      return;
+    };
   };
 
   const delTodoData = async (e,id) => {
+    setErrorMessage(null)
     let res = await delTodo(initialURL,id)
     console.log(res);
     setTodoData(
@@ -138,8 +150,10 @@ onChange={(e) => selectFilter(e.target.value)}
 >
   <option value="all">なし</option>
   <option value="complete">完了</option>
-  <option value="incomplete">未完了</option>
+  <option value="uncomplete">未完了</option>
 </select>
+
+{errorMessage !== null ? <div>{errorMessage}</div>:<></>}
 
         <div className='todoCardContainer'>
 
