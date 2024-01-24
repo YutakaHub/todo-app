@@ -3,7 +3,6 @@ import './App.css';
 import {getTodo,postTodo,delTodo,getTodoTest} from './utils/todo'
 import React from 'react';
 import Card from './components/Card/Card';
-import Post from './components/Cors/PostTodo';
 import { AiOutlinePlusCircle } from "react-icons/ai"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"
@@ -12,12 +11,6 @@ import { MdDeleteOutline } from "react-icons/md";
 function App() {
   const initialURL = "https://todoapi20240124125933.azurewebsites.net/api/TodoItems";
   const Today = new Date();
-const initialData = {
-    completionDate: Today,
-    todoText: null,
-    completeDateTime: null,
-    completeFlg: false,
-  }
 
   const [loading, setLoading] = useState(true);
   const [errorMessage,setErrorMessage] = useState(null);
