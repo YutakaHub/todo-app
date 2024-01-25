@@ -1,19 +1,13 @@
 export const getTodoTest = (url) => {
   return new Promise((resolve, reject) => {
-    fetch(url,{
-      method: "GET",
-      mode: 'cors'
-    })
+    fetch(url)
     .then((res)=>resolve(res))  
   })
 }
 
 export const getTodo = (url) => {
   return new Promise((resolve, reject) => {
-    fetch(url,{
-      method: "GET",
-      mode: 'cors'
-    })
+    fetch(url)
     .then((res) => res.json())
     .then((data) => resolve(data));
   })
