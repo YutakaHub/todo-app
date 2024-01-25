@@ -10,7 +10,7 @@ const Card = ({todo}) => {
   const initialURL = "http://localhost:5273/api/TodoItems";
   const Today = new Date();
   const date = new Date(todo.completionDate);
-  const date2 = new Date(todo.completeDateTime);
+  const date2 = new Date(todo.completionDate);
   const [isEditing, setIsEditing] = useState(false);
   const [completionDate, setCompletionDate] = useState(date);
   const [completeDateTime, setCompleteDateTime] = useState(date2);
@@ -31,8 +31,8 @@ const Card = ({todo}) => {
   };
 
   const checkTodoData = async (e) => {
-    setCompleteDateTime(new Date())
-    setCompleteFlg(true)
+    setCompleteDateTime(new Date());
+    setCompleteFlg(true);
     e.stopPropagation();
     console.log(todo.id);
      let res = await putTodo(initialURL,{
@@ -57,7 +57,7 @@ const Card = ({todo}) => {
       <div onClick={() => setIsEditing(true)}>
           <div className='cardText'>{todoText}</div>
           <div className='cardDate'>
-            {completionDate!=null? (
+            {todo.completionDate? (
               <div className='date'>完了予定日:  {completionDate.toLocaleDateString('ja-JP')} </div>
             ):(
               <></>
@@ -85,12 +85,21 @@ const Card = ({todo}) => {
         />
         <div>
           完了予定日
+          {Number(completionDate)? (
           <DatePicker
-           dateFormat="yyyy/MM/dd"
-           selected={completionDate}
-           minDate={Today}
-            onChange={selectedDate => {setCompletionDate(selectedDate || date)}}
-          />
+          dateFormat="yyyy/MM/dd"
+          selected={completionDate}
+          minDate={Today}
+           onChange={selectedDate => {setCompletionDate(selectedDate || date)}}
+         />
+          ):(
+            <DatePicker
+            dateFormat="yyyy/MM/dd"
+            selected={null}
+            minDate={Today}
+             onChange={selectedDate => {setCompletionDate(selectedDate || date)}}
+           />
+          )}
         </div   >
         </div>
       <button onClick={putTodoData}>変更</button>
