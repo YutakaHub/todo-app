@@ -68,13 +68,15 @@ function App() {
     })
     //エラーの場合のみStatusが設定される。
     const status = res.status;
+    const id = res.id;
     if (status) {
       setErrorMessage("入力内容が正しくありません。");
     }else{
-      console.log("a");
+      console.log(id);
       handleTodoCreate();
       setTodoData([
         ...todoData,{
+          id:id,
           completionDate: completionDate,
           todoText: todoText,
           completeFlg: false
