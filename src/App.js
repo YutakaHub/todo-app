@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState} from 'react';
 import './App.css';
 import {getTodo,postTodo,delTodo,getTodoTest} from './utils/todo'
 import React from 'react';
@@ -9,7 +9,7 @@ import "react-datepicker/dist/react-datepicker.css"
 import { MdDeleteOutline } from "react-icons/md";
 
 function App() {
-  const initialURL = "https://todoapi20240124125933.azurewebsites.net/api/TodoItems";
+  const initialURL = `${process.env.REACT_APP_API_DOMAIN}api/TodoItems`;
   const Today = new Date();
 
   const [loading, setLoading] = useState(true);

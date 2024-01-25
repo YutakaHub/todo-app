@@ -35,6 +35,7 @@ export const postTodo = (url,data) => {
 }
 
 export const putTodo = (url,data) => {
+  console.log(data.id)
   return new Promise((resolve, reject) => {
     fetch(url+'/'+data.id,{
       method: "PUT",
