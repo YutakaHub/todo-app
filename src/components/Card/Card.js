@@ -18,9 +18,9 @@ const Card = ({todo}) => {
   const [todoText, setTodoText] = useState(todo.todoText);
 
   const putTodoData = async () => {
+    console.log(todo.id);
      let res = await putTodo(initialURL,{
       id: todo.id,
-     // completionDate: completionDate,
       completionDate: completionDate,
       todoText: todoText,
       completeFlg: completeFlg,
@@ -34,6 +34,7 @@ const Card = ({todo}) => {
     setCompleteDateTime(new Date())
     setCompleteFlg(true)
     e.stopPropagation();
+    console.log(todo.id);
      let res = await putTodo(initialURL,{
       id: todo.id,
       completionDate: completionDate,
