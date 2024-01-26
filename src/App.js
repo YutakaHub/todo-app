@@ -19,9 +19,8 @@ function App() {
   const [todoText, setTodoText] = useState('');
   const [filter, setFilter] = useState("all");
   const [showModal, setShowModal] = useState(false);
-  const [completeDateTime, setCompleteDateTime] = useState(null);
-  const [completeFlg, setCompleteFlg] = useState();
   const [id, setId] = useState(null)
+  const [todoItem, setTodoItem] = useState({ id: null, todoText: "", completionDate: null, completeFlg: null, completeDateTime: null })
 
   const Today = new Date();
 
@@ -56,21 +55,46 @@ function App() {
   };
 
   //Todo完了登録ボタン
-  const checkTodoData = async (e, id) => {
-    setCompleteDateTime(new Date());
-    setCompleteFlg(true);
-    e.stopPropagation();
-    console.log(id);
-    let res = await putTodo(initialURL, {
-      id: id,
-      completionDate: completionDate,
-      todoText: todoText,
+  const checkTodoData = async (e, todo) => {
+    setTodoItem({
+      id: todo.id,
+      completionDate: todo.completionDate,
+      todoText: todo.todoText,
       completeFlg: true,
-      completeDateTime: Today,
+      completeDateTime: new Date()
+    })
+    console.log(todoItem)
+    e.stopPropagation();
+    let res = await putTodo(initialURL, {
+      id: todoItem.id,
+      completionDate: new Date(todoItem.completionDate),
+      todoText: todoItem.todoText,
+      completeFlg: todoItem.completeFlg,
+      completeDateTime: todoItem.completeDateTime
     });
-    console.log(res);
-  };
 
+    //エラーの場合のみStatusが設定される。
+    const status = res.status;
+    const id = res.id;
+    if (status != 204) {
+      console.log(res);
+      setErrorMessage("入力内容が正しくありません。");
+    } else {
+      setTodoData(todoData.map((todo) => {
+        if (todo.id === todoItem.id) {
+          return {
+            id: todoItem.id,
+            completionDate: todoItem.completionDate,
+            todoText: todoItem.todoText,
+            completeFlg: true,
+            completeDateTime: new Date()
+          };
+        } else {
+          return todo;
+        }
+      }));
+    }
+  };
 
   //新規作成画面表示
   const ShowModal = () => {
@@ -80,41 +104,43 @@ function App() {
   };
 
   //Todo変更画面表示
-  const selectTodo = (id, todoText, completionDate, completeFlg) => {
-    setId(id);
-    setTodoText(todoText);
-    setCompletionDate(completionDate);
-    setCompleteFlg(completeFlg);
+  const selectTodo = (todo) => {
+    setId(todo.id);
+    setTodoItem({
+      id: todo.id,
+      todoText: todo.todoText,
+      completionDate: todo.completionDate,
+      completeFlg: todo.completeFlg,
+      completeDateTime: todo.completeDateTime
+    })
   };
 
   //Todo変更
-  const putTodoData = async (todoId) => {
+  const putTodoData = async () => {
     setErrorMessage(null)
     if (todoText.length <= 100) {
       let res = await putTodo(initialURL, {
-        id: todoId,
-        completionDate: completionDate,
-        todoText: todoText,
-        completeFlg: completeFlg,
-        completeDateTime: null
+        id: todoItem.id,
+        completionDate: new Date(todoItem.completionDate),
+        todoText: todoItem.todoText,
+        completeFlg: todoItem.completeFlg,
+        completeDateTime: todoItem.completeDateTime
       });
       //エラーの場合のみStatusが設定される。
       const status = res.status;
       const id = res.id;
-      if (status) {
+      if (status != 204) {
         console.log(res);
         setErrorMessage("入力内容が正しくありません。");
       } else {
-        console.log(id);
-        ShowModal();
-        setTodoData(todoData.map((todo, id) => {
-          if (todo.id === id) {
+        setTodoData(todoData.map((todo) => {
+          if (todo.id === todoItem.id) {
             return {
-              id: todo.id,
-              completionDate: completionDate,
-              todoText: todoText,
-              completeFlg: completeFlg,
-              completeDateTime: completeDateTime
+              id: todoItem.id,
+              completionDate: todoItem.completionDate,
+              todoText: todoItem.todoText,
+              completeFlg: todoItem.completeFlg,
+              completeDateTime: todoItem.completeDateTime
             };
           } else {
             return todo;
@@ -125,8 +151,7 @@ function App() {
       setErrorMessage("100文字以内に修正してください。");
       return;
     };
-    console.log(id);
-    setShowModal(false);
+    setId(null);;
   };
 
   //データ登録
@@ -166,6 +191,7 @@ function App() {
   //データ削除
   const delTodoData = async (e, id) => {
     setErrorMessage(null)
+    e.stopPropagation();
     let res = await delTodo(initialURL, id)
     console.log(res);
     setTodoData(
@@ -224,6 +250,8 @@ function App() {
                       id={id}
                       setId={setId}
                       todoId={todo.id}
+                      setTodoItem={setTodoItem}
+                      todoItem={todoItem}
                       setCompletionDate={setCompletionDate}
                       completionDate={new Date(completionDate)}
                       setTodoText={setTodoText}
@@ -231,7 +259,7 @@ function App() {
                       errorMessage={errorMessage}
                       putTodoData={putTodoData}
                     />
-                    <div className='card' key={todo.id} onClick={() => selectTodo(todo.id, todo.todoText, todo.completionDate, todo.completeFlg)}>
+                    <div className='card' key={todo.id} onClick={() => selectTodo(todo)}>
                       <Card
                         id={todo.id}
                         todo={todo}
@@ -241,9 +269,11 @@ function App() {
                         completeDateTime={todo.completeDateTime}
                         completeFlg={todo.completeFlg}
                       />
-                      <div className='checkButton' onClick={(event) => checkTodoData(event, todo.id)}>
-                        <AiOutlineCheckCircle />
-                      </div>
+                      {!todo.completeFlg ? (
+                        <div className='checkButton' onClick={(event) => checkTodoData(event, todo)}>
+                          <AiOutlineCheckCircle />
+                        </div>
+                      ) : (<></>)}
                       <div className='delButton' onClick={(event) => delTodoData(event, todo.id)}>
                         <MdDeleteOutline />
                       </div>

@@ -12,25 +12,25 @@ const ModalDetaile = (props) => {
             <h4 style={content}>Todo変更</h4>
             <div style={datePicker}>
               完了予定日
-              {Number(props.completionDate) === 0 ? (
+              {Number(props.todoItem.completionDate) === 0 ? (
                 <DatePicker
                   dateFormat="yyyy/MM/dd"
                   minDate={Today}
                   selected={null}
-                  onChange={selectedDate => { props.setCompletionDate(selectedDate || Today) }}
+                  onChange={selectedDate => { props.setTodoItem({ ...props.todoItem, completionDate: (selectedDate || Today) }) }}
                 />
               ) : (
                 <DatePicker
                   dateFormat="yyyy/MM/dd"
                   minDate={Today}
-                  selected={props.completionDate}
-                  onChange={selectedDate => { props.setCompletionDate(selectedDate || Today) }}
+                  selected={new Date(props.todoItem.completionDate)}
+                  onChange={selectedDate => { props.setTodoItem({ ...props.todoItem, completionDate: (selectedDate || Today) }) }}
                 />
               )}
             </div>
             <textarea style={textarea}
-              value={props.todoText}
-              onChange={(e) => props.setTodoText(e.target.value)}
+              value={props.todoItem.todoText}
+              onChange={(e) => props.setTodoItem({ ...props.todoItem, todoText: e.target.value })}
             />
             <br />
             {props.errorMessage !== null ? <div>{props.errorMessage}</div> : <br />}

@@ -6,7 +6,6 @@ import "react-datepicker/dist/react-datepicker.css"
 const Card = (props) => {
   const date = new Date(props.completionDate);
   const date2 = new Date(props.completeDateTime);
-  const [completeFlg, setCompleteFlg] = useState(props.completeFlg);
 
   return (
     <div>
