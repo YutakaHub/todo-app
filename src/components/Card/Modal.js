@@ -12,10 +12,11 @@ const Modal = (props) => {
         <div id="overlay">
           <div id="modalContent">
             <h4 id="content">Todo新規作成</h4>
-            <div id="datePicker">
+            <div id="date">
               完了予定日
               {Number(props.completionDate) === 0 ? (
                 <DatePicker
+                  wrapperClassName="datePicker"
                   dateFormat="yyyy/MM/dd"
                   minDate={Today}
                   selected={null}
@@ -23,6 +24,7 @@ const Modal = (props) => {
                 />
               ) : (
                 <DatePicker
+                  wrapperClassName="datePicker"
                   dateFormat="yyyy/MM/dd"
                   minDate={Today}
                   selected={props.completionDate}

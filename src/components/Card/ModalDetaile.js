@@ -11,10 +11,11 @@ const ModalDetaile = (props) => {
         <div id="overlay">
           <div id="modalContent">
             <h4 id="content">Todo変更</h4>
-            <div id="datePicker">
+            <div id="date">
               完了予定日
               {Number(props.todoItem.completionDate) === 0 ? (
                 <DatePicker
+                  id="datePicker"
                   dateFormat="yyyy/MM/dd"
                   minDate={Today}
                   selected={null}
@@ -22,6 +23,7 @@ const ModalDetaile = (props) => {
                 />
               ) : (
                 <DatePicker
+                  id="datePicker"
                   dateFormat="yyyy/MM/dd"
                   minDate={Today}
                   selected={new Date(props.todoItem.completionDate)}

@@ -10,10 +10,14 @@
   width: auto;
 }
 
-#datePicker {
+#date {
   text-align: left;
   white-space: nowrap;
   size: 10px;
+}
+
+.react-datepicker__input-container input {
+  width: 40%;
 }
 
 #textarea {
@@ -30,6 +34,7 @@
   border-radius: 3px;
   z-index: 1;
   width: 90%;
+  min-width: 170px;
   max-width: 380px;
   height: 40%;
   min-height: 350px;
