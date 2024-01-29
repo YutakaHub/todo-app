@@ -2,9 +2,12 @@ export const getTodoTest = (url) => {
   return new Promise((resolve, reject) => {
     fetch(url)
       .then((res) => resolve(res))
+      .catch((res) => {
+        console.log(res);
+        reject(res);
+      })
   })
 }
-
 export const getTodo = (url) => {
   return new Promise((resolve, reject) => {
     fetch(url)

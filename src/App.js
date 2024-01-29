@@ -13,7 +13,8 @@ import ModalDetaile from './components/Card/ModalDetaile';
 function App() {
   const initialURL = `${process.env.REACT_APP_API_DOMAIN}api/TodoItems`;
   const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [connecting, setConnecting] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("読み込み中・・・");
   const [todoData, setTodoData] = useState();
   const [completionDate, setCompletionDate] = useState(null);
   const [todoText, setTodoText] = useState('');
@@ -34,13 +35,17 @@ function App() {
   }, [filter])
 
   const getTodoTestData = async () => {
-    let res = await getTodoTest(`${initialURL}/test`);
-    console.log(res);
+    try {
+      let res = await getTodoTest(`${initialURL}/test`);
+      console.log(res);
+    } catch {
+      setConnecting(false);
+      setErrorMessage("サーバーとの接続に失敗しました。");
+    }
   };
 
   //データ取得処理
   const getTodoData = async () => {
-    console.log(filter);
     setErrorMessage(null);
     let res = await getTodo(`${initialURL}?filter=${filter}`);
     //Todoごとの詳細のデータを取得。
@@ -48,6 +53,7 @@ function App() {
 
     const status = res.status;
     if (status) {
+      setConnecting(false);
       setErrorMessage("データが取得できませんでした。");
     } else {
       setTodoData(res)
@@ -56,23 +62,14 @@ function App() {
 
   //Todo完了登録ボタン
   const checkTodoData = async (e, todo) => {
-    setTodoItem({
+    e.stopPropagation();
+    let res = await putTodo(initialURL, {
       id: todo.id,
-      completionDate: todo.completionDate,
+      completionDate: new Date(todo.completionDate),
       todoText: todo.todoText,
       completeFlg: true,
       completeDateTime: new Date()
-    })
-    console.log(todoItem)
-    e.stopPropagation();
-    let res = await putTodo(initialURL, {
-      id: todoItem.id,
-      completionDate: new Date(todoItem.completionDate),
-      todoText: todoItem.todoText,
-      completeFlg: todoItem.completeFlg,
-      completeDateTime: todoItem.completeDateTime
     });
-
     //エラーの場合のみStatusが設定される。
     const status = res.status;
     const id = res.id;
@@ -80,12 +77,12 @@ function App() {
       console.log(res);
       setErrorMessage("入力内容が正しくありません。");
     } else {
-      setTodoData(todoData.map((todo) => {
-        if (todo.id === todoItem.id) {
+      setTodoData(todoData.map((map) => {
+        if (map.id === todo.id) {
           return {
-            id: todoItem.id,
-            completionDate: todoItem.completionDate,
-            todoText: todoItem.todoText,
+            id: todo.id,
+            completionDate: todo.completionDate,
+            todoText: todo.todoText,
             completeFlg: true,
             completeDateTime: new Date()
           };
@@ -210,8 +207,8 @@ function App() {
 
   return (
     <div className="App">
-      {loading ? (
-        <h1>読み込み中・・・</h1>
+      {loading == true || connecting == false ? (
+        <h1>{errorMessage}</h1>
       ) :
         <>
 
