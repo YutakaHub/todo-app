@@ -1,6 +1,5 @@
 import React from 'react'
 import './Card.css'
-import { useState } from 'react';
 import "react-datepicker/dist/react-datepicker.css"
 
 const Card = (props) => {
