@@ -1,5 +1,6 @@
 import React from "react";
 import DatePicker from "react-datepicker";
+import './Modal.css'
 
 const Today = new Date();
 const completionDate = null;
@@ -8,10 +9,10 @@ const Modal = (props) => {
   return (
     <>
       {props.showFlag ? ( // showFlagがtrueだったらModalを表示する
-        <div id="overlay" style={overlay}>
-          <div id="modalContent" style={modalContent}>
-            <h4 style={content}>Todo新規作成</h4>
-            <div style={datePicker}>
+        <div id="overlay">
+          <div id="modalContent">
+            <h4 id="content">Todo新規作成</h4>
+            <div id="datePicker">
               完了予定日
               {Number(props.completionDate) === 0 ? (
                 <DatePicker
@@ -29,7 +30,7 @@ const Modal = (props) => {
                 />
               )}
             </div>
-            <textarea style={textarea}
+            <textarea id="textarea"
               value={props.todoText}
               onChange={(e) => props.setTodoText(e.target.value)}
             />
@@ -44,46 +45,6 @@ const Modal = (props) => {
       )}
     </>
   );
-};
-const content = {
-  margin: 0,
-  paddind: 0,
-  textAlign: "left",
-}
-const datePicker = {
-  textAlign: "left",
-  paddind: 10,
-  margin: 10,
-}
-
-const textarea = {
-  background: "white",
-  width: "50vh",
-  height: "30vh",
-  resize: "none",
-  marginLeft: 0,
-}
-
-const modalContent = {
-  backgroundColor: "rgb(215, 242, 255)",
-  padding: "10px",
-  borderRadius: "3px",
-  zIndex: 1,
-  width: "55vh",
-  height: "44vh",
-};
-
-const overlay = {
-  position: "fixed",
-  top: 0,
-  left: 0,
-  width: "100%",
-  height: "100%",
-  backgroundColor: "rgba(0,0,0,0.5)",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  zIndex: 1,
 };
 
 export default Modal;

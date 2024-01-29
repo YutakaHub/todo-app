@@ -1,0 +1,60 @@
+.button {
+  text-align: left;
+  padding-left: 5px;
+}
+
+#content {
+  margin: 0px;
+  padding: 0px;
+  text-align: left;
+  width: auto;
+}
+
+#datePicker {
+  text-align: left;
+  white-space: nowrap;
+  size: 10px;
+}
+
+#textarea {
+  background: white;
+  width: 99%;
+  height: 70%;
+  resize: none;
+  margin-left: 0;
+}
+
+#modalContent {
+  background-color: rgb(215, 242, 255);
+  padding: 10px;
+  border-radius: 3px;
+  z-index: 1;
+  width: 90%;
+  max-width: 380px;
+  height: 40%;
+  min-height: 350px;
+}
+
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+@media screen and (min-width: 600px) {
+  #modalContent {
+    background-color: rgb(215, 242, 255);
+    padding: 10px;
+    border-radius: 3px;
+    z-index: 1;
+    width: 380px;
+    height: 44vh;
+  }
+}
