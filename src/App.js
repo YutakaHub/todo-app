@@ -206,7 +206,7 @@ function App() {
 
 
   return (
-    <div className="App">
+    <div className="App" lang='ja'>
       {loading == true || connecting == false ? (
         <h1>{errorMessage}</h1>
       ) :
