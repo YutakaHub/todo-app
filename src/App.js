@@ -87,7 +87,7 @@ function App() {
             completeDateTime: new Date()
           };
         } else {
-          return todo;
+          return map;
         }
       }));
     }
