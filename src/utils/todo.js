@@ -1,21 +1,24 @@
 export const getTodoTest = (url) => {
   return new Promise((resolve, reject) => {
     fetch(url)
-    .then((res)=>resolve(res))  
+      .then((res) => resolve(res))
+      .catch((res) => {
+        console.log(res);
+        reject(res);
+      })
   })
 }
-
 export const getTodo = (url) => {
   return new Promise((resolve, reject) => {
     fetch(url)
-    .then((res) => res.json())
-    .then((data) => resolve(data));
+      .then((res) => res.json())
+      .then((data) => resolve(data));
   })
 }
 
-export const postTodo = (url,data) => {
+export const postTodo = (url, data) => {
   return new Promise((resolve, reject) => {
-    fetch(url,{
+    fetch(url, {
       method: "POST",
       mode: 'cors',
       headers: {
@@ -23,15 +26,15 @@ export const postTodo = (url,data) => {
       },
       body: JSON.stringify(data),
     })
-    .then((res) => res.json())
-    .then((data) => resolve(data));
+      .then((res) => res.json())
+      .then((data) => resolve(data));
   })
 }
 
-export const putTodo = (url,data) => {
-  console.log(data.id)
+export const putTodo = (url, data) => {
+  console.log(data)
   return new Promise((resolve, reject) => {
-    fetch(url+'/'+data.id,{
+    fetch(url + '/' + data.id, {
       method: "PUT",
       mode: 'cors',
       headers: {
@@ -39,20 +42,20 @@ export const putTodo = (url,data) => {
       },
       body: JSON.stringify(data)
     })
-    .then(resolve)
+      .then(resolve)
   })
 }
 
 
-export const delTodo = (url,id) => {
+export const delTodo = (url, id) => {
   return new Promise((resolve, reject) => {
-    fetch(url+'/'+id,{
+    fetch(url + '/' + id, {
       method: "DELETE",
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json'
       },
     })
-    .then(resolve)
+      .then(resolve)
   })
 }
