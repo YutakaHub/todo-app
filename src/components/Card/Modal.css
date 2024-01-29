@@ -55,6 +55,7 @@
     border-radius: 3px;
     z-index: 1;
     width: 380px;
-    height: 44vh;
+    height: 40%;
+    min-height: 350px;
   }
 }
