@@ -13,10 +13,10 @@ const Card = (props) => {
       <div className='cardDate'>
         {Number(date) ? (
           <div className='date'>完了予定日:  {date.toLocaleDateString('ja-JP')} </div>
-        ) : (<></>)}
+        ) : (<div />)}
         {props.completeFlg ? (
           <div className='date'>完了日:  {date2.toLocaleDateString('ja-JP')} </div>
-        ) : (<></>)}
+        ) : (<div />)}
       </div>
     </div>
   )
