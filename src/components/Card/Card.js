@@ -3,15 +3,15 @@ import './Card.css'
 import "react-datepicker/dist/react-datepicker.css"
 import { useDrag, useDrop } from 'react-dnd';
 
-const CardDnd = ({ id, todoText, completionDate, completeDateTime, completeFlg, moveTodoItems, putMoveTodos, backupData }) => {
+const Card = ({ id, sortKey, todoText, completionDate, completeDateTime, completeFlg, moveTodoItems, putMoveTodos, backupData }) => {
   const date = new Date(completionDate);
   const date2 = new Date(completeDateTime);
   const ref = useRef(null);
 
   const [{ isDragging, canDrag }, drag] = useDrag({
     type: 'item',
-    item: { id },//, todoText, completionDate, completeFlg, completeDateTime },
-    isDragging: monitor => monitor.getItem().id === id,
+    item: { sortKey },//, todoText, completionDate, completeFlg, completeDateTime },
+    isDragging: monitor => monitor.getItem().sortKey === sortKey,
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
       canDrag: monitor.canDrag(),
@@ -19,10 +19,15 @@ const CardDnd = ({ id, todoText, completionDate, completeDateTime, completeFlg, 
   })
   const [, drop] = useDrop({
     accept: 'item',
+    //ホバー外れた時に発火
+    leave: (item, monitor) => {
+
+    },
+    //ホバー時に発火
     hover: (item, monitor) => {
-      const dragId = item.id
-      const hoverId = id
-      if (dragId === hoverId) return;
+      const dragSortKey = item.sortKey
+      const hoverSortKey = sortKey
+      if (dragSortKey === hoverSortKey) return;
       const hoverBoundingRect = ref.current?.getBoundingClientRect()
       if (hoverBoundingRect === undefined) return;
       const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
@@ -30,13 +35,13 @@ const CardDnd = ({ id, todoText, completionDate, completeDateTime, completeFlg, 
       if (getClientOffset === undefined) return;
       const hoverActualY = getClientOffset - hoverBoundingRect.top
 
-      if (dragId < hoverId && hoverActualY < hoverMiddleY) return
-      if (dragId > hoverId && hoverActualY > hoverMiddleY) return
+      if (dragSortKey < hoverSortKey && hoverActualY < hoverMiddleY) return
+      if (dragSortKey > hoverSortKey && hoverActualY > hoverMiddleY) return
 
-      moveTodoItems(dragId, hoverId)
-      item.id = hoverId
+      moveTodoItems(dragSortKey, hoverSortKey)
+      item.sortKey = hoverSortKey
     },
-    drop: () => putMoveTodos(id),
+    drop: async () => await putMoveTodos(sortKey),
     collect: monitor => ({
       isOver: !!monitor.isOver(),
     }),
@@ -49,7 +54,7 @@ const CardDnd = ({ id, todoText, completionDate, completeDateTime, completeFlg, 
         opacity: isDragging ? 0.4 : 1,
         cursor: canDrag ? 'move' : 'default',
       }}
-      onDragStart={() => backupData(id)}
+      onDragStart={() => backupData(sortKey)}
     >
       {!isDragging && (
         <div className='cardText'>{todoText}{isDragging}</div>
@@ -69,4 +74,4 @@ const CardDnd = ({ id, todoText, completionDate, completeDateTime, completeFlg, 
   )
 }
 
-export default CardDnd;
+export default Card;

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import './App.css';
-import { getTodo, postTodo, delTodo, getTodoTest, putTodo } from './utils/todo.js'
+import { getTodo, postTodo, delTodo, getTodoTest, putTodo, putTodos } from './utils/todo.js'
 import React from 'react';
 //import Card from './components/Card/Card.js';
 import { AiOutlinePlusCircle } from "react-icons/ai"
@@ -24,7 +24,7 @@ function App() {
   const [filter, setFilter] = useState("all");
   const [showModal, setShowModal] = useState(false);
   const [id, setId] = useState(null)
-  const [startDragId, setStartDragId] = useState([])
+  const [startDragSortKey, setStartDragSortKey] = useState([])
   const [todoItem, setTodoItem] = useState({ id: null, todoText: "", completionDate: null, completeFlg: null, completeDateTime: null, sortKey: null })
 
   const Today = new Date();
@@ -41,7 +41,6 @@ function App() {
   const getTodoTestData = async () => {
     try {
       let res = await getTodoTest(`${initialURL}/test`);
-      console.log(res);
     } catch {
       setConnecting(false);
       setErrorMessage("サーバーとの接続に失敗しました。");
@@ -77,7 +76,6 @@ function App() {
     });
     //エラーの場合のみStatusが設定される。
     const status = res.status;
-    const id = res.id;
     if (status != 204) {
       console.log(res);
       setErrorMessage("入力内容が正しくありません。");
@@ -89,7 +87,8 @@ function App() {
             completionDate: todo.completionDate,
             todoText: todo.todoText,
             completeFlg: true,
-            completeDateTime: new Date()
+            completeDateTime: new Date(),
+            sortKey: todo.sortKey
           };
         } else {
           return map;
@@ -112,7 +111,8 @@ function App() {
       todoText: todo.todoText,
       completionDate: todo.completionDate,
       completeFlg: todo.completeFlg,
-      completeDateTime: todo.completeDateTime
+      completeDateTime: todo.completeDateTime,
+      sortKey: todo.sortKey
     })
   };
 
@@ -126,10 +126,10 @@ function App() {
         todoText: todoItem.todoText,
         completeFlg: todoItem.completeFlg,
         completeDateTime: todoItem.completeDateTime,
+        sortKey: todoItem.sortKey
       });
       //エラーの場合のみStatusが設定される。
       const status = res.status;
-      const id = res.id;
       if (status != 204) {
         console.log(res);
         setErrorMessage("入力内容が正しくありません。");
@@ -141,7 +141,8 @@ function App() {
               completionDate: todoItem.completionDate,
               todoText: todoItem.todoText,
               completeFlg: todoItem.completeFlg,
-              completeDateTime: todoItem.completeDateTime
+              completeDateTime: todoItem.completeDateTime,
+              sortKey: todoItem.sortKey
             };
           } else {
             return todo;
@@ -152,12 +153,14 @@ function App() {
       setErrorMessage("100文字以内に修正してください。");
       return;
     };
-    setId(null);;
+    setId(null);
   };
 
+  const aryMax = function (a, b) { return Math.max(a, b); }
   //データ登録
   const postTodoData = async () => {
     setErrorMessage(null)
+    console.log(todoData.reduce(aryMax));
     if (todoText.length <= 100) {
       let res = await postTodo(initialURL, {
         id: 0,
@@ -165,7 +168,6 @@ function App() {
         todoText: todoText,
         completeFlg: false,
         completeDateTime: null,
-        position: null,
       })
       //エラーの場合のみStatusが設定される。
       const status = res.status;
@@ -179,7 +181,8 @@ function App() {
             id: res.id,
             completionDate: completionDate,
             todoText: todoText,
-            completeFlg: false
+            completeFlg: false,
+            sortKey: res.sortKey
           }, ...todoData
         ]);
       }
@@ -208,34 +211,34 @@ function App() {
     setFilter(select);
   };
 
-  //ドロップ時にIDを採番して配列を並び替える。
-  const moveTodoItems = async (dragId, hoverId) => {
+  //ホバー時にIDを採番して配列を並び替える。
+  const moveTodoItems = async (dragSortKey, hoverSortKey) => {
     let count = 0;
     let nextCount = 0;
     const targetItems = todoData.map((x) => {
       count = nextCount;
       //ドラッグした要素を下の要素にホバーした場合
-      if (dragId >= x.id && x.id >= hoverId) {
+      if (dragSortKey >= x.sortKey && x.sortKey >= hoverSortKey) {
         nextCount = count + 1;
-        if (x.id === dragId) {
-          x.id = hoverId;
+        if (x.sortKey === dragSortKey) {
+          x.sortKey = hoverSortKey;
         } else {
-          x.id = dragId - count + 1;
+          x.sortKey = dragSortKey - count + 1;
         }
         //ドラッグした要素を上の要素にホバーした場合
-      } else if (dragId <= x.id && x.id <= hoverId) {
+      } else if (dragSortKey <= x.sortKey && x.sortKey <= hoverSortKey) {
         nextCount = count + 1;
-        if (x.id === dragId) {
-          x.id = hoverId;
+        if (x.sortKey === dragSortKey) {
+          x.sortKey = hoverSortKey;
         } else {
-          x.id = dragId - count;
+          x.sortKey = dragSortKey - count;
         }
       }
       return x;
     })
     //ソート処理
     const sortItems = targetItems.sort((a, b) => {
-      if (a.id > b.id) {
+      if (a.sortKey > b.sortKey) {
         return -1;
       } else {
         return 1;
@@ -245,33 +248,24 @@ function App() {
   };
 
   //ドラッグ開始時にドラッグID保持
-  const backupData = (id) => {
-    setStartDragId(id);
-    console.log(id);
+  const backupData = (sortKey) => {
+    setStartDragSortKey(sortKey);
+    console.log(sortKey);
   }
 
   //ドロップ時にドラッグIDとホバーIDから更新するアイテムを算出。
-  const putMoveTodos = async (id) => {
-    if (startDragId === id) return;
+  const putMoveTodos = async (sortKey) => {
+    if (startDragSortKey === sortKey) return;
     const result = todoData.filter((todo) => {
-      if (startDragId > id) {//ホバー先が下の要素
-        return todo.id >= id && todo.id <= startDragId
+      if (startDragSortKey > sortKey) {//ホバー先が下の要素
+        return todo.sortKey >= sortKey && todo.sortKey <= startDragSortKey
       } else {//ホバー先が上の要素
-        return todo.id <= id && todo.id >= startDragId
+        return todo.sortKey <= sortKey && todo.sortKey >= startDragSortKey
       }
     })
     console.log(result);
-    /*
-    await result.map((todo) => {
-      let res = putTodo(initialURL, {
-        id: todo.id,
-        completionDate: new Date(todo.completionDate),
-        todoText: todo.todoText,
-        completeFlg: todo.completeFlg,
-        completeDateTime: todo.completeDateTime,
-      });
-      console.log(res);
-  })*/
+    let res = await putTodos(initialURL, result);
+    console.log(res);
   }
 
   return (
@@ -280,7 +274,6 @@ function App() {
         <h1>{errorMessage}</h1>
       ) :
         <>
-
           <div className='todoPost' onClick={ShowModal}>
             <h5 className='todoPostText'>Todo作成</h5>
             <h1><AiOutlinePlusCircle /></h1>
@@ -329,6 +322,7 @@ function App() {
                       <ul className='card' key={todo.id} onClick={() => { selectTodo(todo); setId(todo.id) }}>
                         <Card
                           id={todo.id}
+                          sortKey={todo.sortKey}
                           todo={todo}
                           setShowModal={setShowModal}
                           todoText={todo.todoText}
