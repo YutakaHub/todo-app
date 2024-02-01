@@ -14,7 +14,7 @@ function App() {
   const initialURL = `${process.env.REACT_APP_API_DOMAIN}api/TodoItems`;
   const [loading, setLoading] = useState(true);
   const [connecting, setConnecting] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("読み込み中・・・");
+  const [errorMessage, setErrorMessage] = useState("");
   const [todoData, setTodoData] = useState();
   const [completionDate, setCompletionDate] = useState(null);
   const [todoText, setTodoText] = useState('');
@@ -26,6 +26,7 @@ function App() {
   const Today = new Date();
 
   useEffect(() => {
+    setErrorMessage("読み込み中・・・");
     getTodoTestData();
   }, [])
 
@@ -225,6 +226,7 @@ function App() {
             setTodoText={setTodoText}
             todoText={todoText}
             errorMessage={errorMessage}
+            setErrorMessage={setErrorMessage}
             postTodoData={postTodoData}
             putTodoData={putTodoData}
           />
@@ -254,6 +256,7 @@ function App() {
                       setTodoText={setTodoText}
                       todoText={todoText}
                       errorMessage={errorMessage}
+                      setErrorMessage={setErrorMessage}
                       putTodoData={putTodoData}
                     />
                     <div className='card' key={todo.id} onClick={() => selectTodo(todo)}>
