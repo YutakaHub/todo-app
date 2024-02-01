@@ -34,7 +34,11 @@ const Modal = (props) => {
             </div>
             <textarea id="textarea"
               value={props.todoText}
-              onChange={(e) => props.setTodoText(e.target.value)}
+              onChange={(e) => {
+                if (e.target.value.length >= 100) { props.setErrorMessage("100文字以内に修正してください。") }
+                else { props.setErrorMessage(null) }
+                props.setTodoText(e.target.value)
+              }}
             />
             <br />
             {props.errorMessage !== null ? <div>{props.errorMessage}</div> : <br />}
