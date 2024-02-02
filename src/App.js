@@ -14,7 +14,7 @@ function App() {
   const initialURL = `${process.env.REACT_APP_API_DOMAIN}api/TodoItems`;
   const [loading, setLoading] = useState(true);
   const [connecting, setConnecting] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("読み込み中です...");
   const [todoData, setTodoData] = useState();
   const [completionDate, setCompletionDate] = useState(null);
   const [todoText, setTodoText] = useState('');
@@ -26,7 +26,6 @@ function App() {
   const Today = new Date();
 
   useEffect(() => {
-    setErrorMessage("読み込み中・・・");
     getTodoTestData();
   }, [])
 
@@ -99,10 +98,12 @@ function App() {
     setShowModal(!showModal);
     setTodoText('');
     setCompletionDate(null);
+    setErrorMessage(null);
   };
 
   //Todo変更画面表示
   const selectTodo = (todo) => {
+    if (todo.todoText.length <= 100) { setErrorMessage(null) }
     setId(todo.id);
     setTodoItem({
       id: todo.id,

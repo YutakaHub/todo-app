@@ -34,7 +34,7 @@ const ModalDetaile = (props) => {
             <textarea id="textarea"
               value={props.todoItem.todoText}
               onChange={(e) => {
-                if (e.target.value.length >= 100) { props.setErrorMessage("100文字以内にしてください。") } else { props.setErrorMessage(null) }
+                if (e.target.value.length >= 100) { props.setErrorMessage("100文字以内に修正してください。") }
                 props.setTodoItem({ ...props.todoItem, todoText: e.target.value })
               }}
             />
