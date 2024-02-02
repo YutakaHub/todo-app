@@ -103,7 +103,7 @@ function App() {
 
   //Todo変更画面表示
   const selectTodo = (todo) => {
-    if (todo.todoText.length <= 100) { setErrorMessage(null) }
+    setErrorMessage(null);
     setId(todo.id);
     setTodoItem({
       id: todo.id,
