@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import './App.css';
 import { getTodo, postTodo, delTodo, getTodoTest, putTodo } from './utils/todo'
 import React from 'react';
@@ -14,7 +14,7 @@ function App() {
   const initialURL = `${process.env.REACT_APP_API_DOMAIN}api/TodoItems`;
   const [loading, setLoading] = useState(true);
   const [connecting, setConnecting] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("読み込み中です...");
+  const [errorMessage, setErrorMessage] = useState(null);
   const [todoData, setTodoData] = useState();
   const [completionDate, setCompletionDate] = useState(null);
   const [todoText, setTodoText] = useState('');
@@ -24,6 +24,10 @@ function App() {
   const [todoItem, setTodoItem] = useState({ id: null, todoText: "", completionDate: null, completeFlg: null, completeDateTime: null })
 
   const Today = new Date();
+
+  useLayoutEffect(() => {
+    setErrorMessage("読み込み中です...");
+  }, [])
 
   useEffect(() => {
     getTodoTestData();

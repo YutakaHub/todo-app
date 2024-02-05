@@ -10,7 +10,7 @@ const Card = (props) => {
     <div>
       <div className='cardText'>{props.todoText}</div>
       <div className='cardDate'>
-        {Number(date) ? (
+        {props.completionDate ? (
           <div className='date'>完了予定日:  {date.toLocaleDateString('ja-JP')} </div>
         ) : (<div />)}
         {props.completeFlg ? (
