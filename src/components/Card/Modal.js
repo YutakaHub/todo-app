@@ -3,47 +3,54 @@ import DatePicker from "react-datepicker";
 import './Modal.css'
 
 const Today = new Date();
-const completionDate = null;
 
-const Modal = (props) => {
+const Modal = ({
+  showFlag,
+  setShowModal,
+  setTodoItem,
+  todoItem,
+  errorMessage,
+  setErrorMessage,
+  postTodoData,
+}) => {
   return (
     <>
-      {props.showFlag ? ( // showFlagがtrueだったらModalを表示する
+      {showFlag ? ( // showFlagがtrueだったらModalを表示する
         <div id="overlay">
           <div id="modalContent">
             <h4 id="content">Todo新規作成</h4>
             <div id="date">
               完了予定日
-              {Number(props.completionDate) === 0 ? (
+              {todoItem.completionDate === null ? (
                 <DatePicker
-                  wrapperClassName="datePicker"
+                  id="datePicker"
                   dateFormat="yyyy/MM/dd"
                   minDate={Today}
                   selected={null}
-                  onChange={selectedDate => { props.setCompletionDate(selectedDate || Today) }}
+                  onChange={selectedDate => { setTodoItem({ ...todoItem, completionDate: (selectedDate || Today).toISOString() }) }}
                 />
               ) : (
                 <DatePicker
-                  wrapperClassName="datePicker"
+                  id="datePicker"
                   dateFormat="yyyy/MM/dd"
                   minDate={Today}
-                  selected={props.completionDate}
-                  onChange={selectedDate => { props.setCompletionDate(selectedDate || Today) }}
+                  selected={new Date(todoItem.completionDate)}
+                  onChange={selectedDate => { setTodoItem({ ...todoItem, completionDate: (selectedDate || Today).toISOString() }) }}
                 />
               )}
             </div>
             <textarea id="textarea"
-              value={props.todoText}
+              value={todoItem.todoText}
               onChange={(e) => {
-                if (e.target.value.length > 100) { props.setErrorMessage("100文字以内に修正してください。") }
-                else { props.setErrorMessage(null) }
-                props.setTodoText(e.target.value)
+                if (e.target.value.length > 100) { setErrorMessage("100文字以内に修正してください。") }
+                else { setErrorMessage(null) }
+                setTodoItem({ ...todoItem, todoText: e.target.value })
               }}
             />
             <br />
-            {props.errorMessage !== null ? <div>{props.errorMessage}</div> : <br />}
-            <button onClick={() => props.postTodoData()}>登録</button>
-            <button onClick={() => props.setShowModal(false)}>キャンセル</button>
+            {errorMessage !== null ? <div>{errorMessage}</div> : <br />}
+            <button onClick={() => postTodoData()}>登録</button>
+            <button onClick={() => setShowModal(false)}>キャンセル</button>
           </div>
         </div >
       ) : (

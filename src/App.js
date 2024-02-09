@@ -15,15 +15,12 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [connecting, setConnecting] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [todoData, setTodoData] = useState();
-  const [completionDate, setCompletionDate] = useState(null);
-  const [todoText, setTodoText] = useState('');
+  const [todoData, setTodoData] = useState([{ id: null, todoText: "", completionDate: null, completeFlg: null, completeDateTime: null }]);
   const [filter, setFilter] = useState("all");
   const [showModal, setShowModal] = useState(false);
-  const [id, setId] = useState(null)
-  const [todoItem, setTodoItem] = useState({ id: null, todoText: "", completionDate: null, completeFlg: null, completeDateTime: null })
+  const [id, setId] = useState(null);
+  const [todoItem, setTodoItem] = useState({ id: null, todoText: "", completionDate: null, completeFlg: null, completeDateTime: null });
 
-  const Today = new Date();
 
   useLayoutEffect(() => {
     setErrorMessage("読み込み中です...");
@@ -41,7 +38,6 @@ function App() {
   const getTodoTestData = async () => {
     try {
       let res = await getTodoTest(`${initialURL}/test`);
-      console.log(res);
     } catch {
       setConnecting(false);
       setErrorMessage("サーバーとの接続に失敗しました。");
@@ -63,6 +59,7 @@ function App() {
       setTodoData(res)
     }
   };
+
 
   //Todo完了登録ボタン
   const checkTodoData = async (e, todo) => {
@@ -88,7 +85,7 @@ function App() {
             completionDate: todo.completionDate,
             todoText: todo.todoText,
             completeFlg: true,
-            completeDateTime: new Date()
+            completeDateTime: new Date().toISOString()
           };
         } else {
           return map;
@@ -100,8 +97,7 @@ function App() {
   //新規作成画面表示
   const ShowModal = () => {
     setShowModal(!showModal);
-    setTodoText('');
-    setCompletionDate(null);
+    setTodoItem({ id: null, todoText: "", completionDate: null, completeFlg: null, completeDateTime: null })
     setErrorMessage(null);
   };
 
@@ -121,13 +117,13 @@ function App() {
   //Todo変更
   const putTodoData = async () => {
     setErrorMessage(null)
-    if (todoText.length <= 100) {
+    if (todoItem.todoText.length <= 100) {
       let res = await putTodo(initialURL, {
         id: todoItem.id,
         completionDate: new Date(todoItem.completionDate),
         todoText: todoItem.todoText,
         completeFlg: todoItem.completeFlg,
-        completeDateTime: todoItem.completeDateTime
+        completeDateTime: new Date(todoItem.completeDateTime)
       });
       //エラーの場合のみStatusが設定される。
       const status = res.status;
@@ -160,11 +156,11 @@ function App() {
   //データ登録
   const postTodoData = async () => {
     setErrorMessage(null)
-    if (todoText.length <= 100) {
+    if (todoItem.todoText.length <= 100) {
       let res = await postTodo(initialURL, {
         id: 0,
-        completionDate: completionDate,
-        todoText: todoText,
+        completionDate: new Date(todoItem.completionDate),
+        todoText: todoItem.todoText,
         completeFlg: false,
         completeDateTime: null,
       })
@@ -174,13 +170,12 @@ function App() {
       if (status) {
         setErrorMessage("入力内容が正しくありません。");
       } else {
-        console.log(id);
         ShowModal();
         setTodoData([
           {
             id: id,
-            completionDate: completionDate,
-            todoText: todoText,
+            completionDate: todoItem.completionDate,
+            todoText: todoItem.todoText,
             completeFlg: false
           }, ...todoData
         ]);
@@ -202,7 +197,6 @@ function App() {
         todo.id !== id
       )
     );
-    console.log(todoData);
   };
 
   //フィルター機能
@@ -225,15 +219,11 @@ function App() {
           <Modal
             showFlag={showModal}
             setShowModal={setShowModal}
-            id={id}
-            setCompletionDate={setCompletionDate}
-            completionDate={new Date(completionDate)}
-            setTodoText={setTodoText}
-            todoText={todoText}
+            todoItem={todoItem}
+            setTodoItem={setTodoItem}
             errorMessage={errorMessage}
             setErrorMessage={setErrorMessage}
             postTodoData={postTodoData}
-            putTodoData={putTodoData}
           />
 
           <select
@@ -256,23 +246,13 @@ function App() {
                       todoId={todo.id}
                       setTodoItem={setTodoItem}
                       todoItem={todoItem}
-                      setCompletionDate={setCompletionDate}
-                      completionDate={new Date(completionDate)}
-                      setTodoText={setTodoText}
-                      todoText={todoText}
                       errorMessage={errorMessage}
                       setErrorMessage={setErrorMessage}
                       putTodoData={putTodoData}
                     />
                     <div className='card' key={todo.id} onClick={() => selectTodo(todo)}>
                       <Card
-                        id={todo.id}
                         todo={todo}
-                        setShowModal={setShowModal}
-                        todoText={todo.todoText}
-                        completionDate={todo.completionDate}
-                        completeDateTime={todo.completeDateTime}
-                        completeFlg={todo.completeFlg}
                       />
                       {!todo.completeFlg ? (
                         <div className='checkButton' onClick={(event) => checkTodoData(event, todo)}>

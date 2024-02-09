@@ -1,21 +1,21 @@
 import React from 'react'
 import './Card.css'
 import "react-datepicker/dist/react-datepicker.css"
+import dayjs from 'dayjs'
 
-const Card = (props) => {
-  const date = new Date(props.completionDate);
-  const date2 = new Date(props.completeDateTime);
+const Card = ({ todo }) => {
+
 
   return (
     <div>
-      <div className='cardText'>{props.todoText}</div>
+      <div className='cardText'>{todo.todoText}</div>
       <div className='cardDate'>
-        {props.completionDate ? (
-          <div className='date'>完了予定日:  {date.toLocaleDateString('ja-JP')} </div>
-        ) : (<div />)}
-        {props.completeFlg ? (
-          <div className='date'>完了日:  {date2.toLocaleDateString('ja-JP')} </div>
-        ) : (<div />)}
+        {todo.completionDate ? (
+          <div className='date'>完了予定日:  {dayjs(todo.completionDate).locale('ja').format('YYYY-MM-DD')} </div>
+        ) : (<div className='date'>完了予定日:  未設定 </div>)}
+        {todo.completeFlg ? (
+          <div className='date'>完了日:  {dayjs(todo.completeDateTime).locale('ja').format('YYYY-MM-DD')} </div>
+        ) : (<div className='date'>完了日:  未完了</div>)}
       </div>
     </div>
   )
