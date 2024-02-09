@@ -64,13 +64,16 @@ function App() {
   //Todo完了登録ボタン
   const checkTodoData = async (e, todo) => {
     e.stopPropagation();
-    let res = await putTodo(initialURL, {
+    let prams = {
       id: todo.id,
-      completionDate: new Date(todo.completionDate),
+      completionDate: null,
       todoText: todo.todoText,
       completeFlg: true,
-      completeDateTime: new Date()
-    });
+      completeDateTime: new Date(),
+    }
+    prams.completionDate = todoItem.completionDate ? new Date(todoItem.completionDate) : null;
+
+    let res = await putTodo(initialURL, prams);
     //エラーの場合のみStatusが設定される。
     const status = res.status;
     const id = res.id;
@@ -118,13 +121,17 @@ function App() {
   const putTodoData = async () => {
     setErrorMessage(null)
     if (todoItem.todoText.length <= 100) {
-      let res = await putTodo(initialURL, {
+      let prams = {
         id: todoItem.id,
-        completionDate: new Date(todoItem.completionDate),
+        completionDate: null,
         todoText: todoItem.todoText,
         completeFlg: todoItem.completeFlg,
-        completeDateTime: new Date(todoItem.completeDateTime)
-      });
+        completeDateTime: null,
+      }
+      prams.completionDate = todoItem.completionDate ? new Date(todoItem.completionDate) : null;
+      prams.completeDateTime = todoItem.completeDateTime ? new Date(todoItem.completeDateTime) : null;
+
+      let res = await putTodo(initialURL, prams);
       //エラーの場合のみStatusが設定される。
       const status = res.status;
       const id = res.id;
@@ -157,13 +164,16 @@ function App() {
   const postTodoData = async () => {
     setErrorMessage(null)
     if (todoItem.todoText.length <= 100) {
-      let res = await postTodo(initialURL, {
+
+      let prams = {
         id: 0,
-        completionDate: new Date(todoItem.completionDate),
+        completionDate: null,
         todoText: todoItem.todoText,
         completeFlg: false,
         completeDateTime: null,
-      })
+      }
+      prams.completionDate = todoItem.completionDate ? new Date(todoItem.completionDate) : null;
+      let res = await postTodo(initialURL, prams)
       //エラーの場合のみStatusが設定される。
       const status = res.status;
       const id = res.id;
