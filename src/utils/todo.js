@@ -2,10 +2,7 @@ export const getTodoTest = (url) => {
   return new Promise((resolve, reject) => {
     fetch(url)
       .then((res) => resolve(res))
-      .catch((res) => {
-        console.log(res);
-        reject(res);
-      })
+      .catch((res) => reject(res))
   })
 }
 export const getTodo = (url) => {
@@ -32,7 +29,6 @@ export const postTodo = (url, data) => {
 }
 
 export const putTodo = (url, data) => {
-  console.log(data)
   return new Promise((resolve, reject) => {
     fetch(url + '/' + data.id, {
       method: "PUT",

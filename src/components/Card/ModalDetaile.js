@@ -4,44 +4,54 @@ import './Modal.css'
 
 const Today = new Date();
 
-const ModalDetaile = (props) => {
+const ModalDetaile = ({
+  id,
+  setId,
+  todoId,
+  setTodoItem,
+  todoItem,
+  errorMessage,
+  setErrorMessage,
+  putTodoData
+}) => {
   return (
     <>
-      {props.id === props.todoId ? ( // Idが一緒だったらModalを表示する
+      {id === todoId ? ( // Idが一緒だったらModalを表示する
         <div id="overlay">
           <div id="modalContent">
             <h4 id="content">Todo変更</h4>
             <div id="date">
               完了予定日
-              {Number(props.todoItem.completionDate) === 0 ? (
+              {todoItem.completionDate === null ? (
                 <DatePicker
                   id="datePicker"
                   dateFormat="yyyy/MM/dd"
                   minDate={Today}
                   selected={null}
-                  onChange={selectedDate => { props.setTodoItem({ ...props.todoItem, completionDate: (selectedDate || Today) }) }}
+                  onChange={selectedDate => { setTodoItem({ ...todoItem, completionDate: (selectedDate || Today) }) }}
                 />
               ) : (
                 <DatePicker
                   id="datePicker"
                   dateFormat="yyyy/MM/dd"
                   minDate={Today}
-                  selected={new Date(props.todoItem.completionDate)}
-                  onChange={selectedDate => { props.setTodoItem({ ...props.todoItem, completionDate: (selectedDate || Today) }) }}
+                  selected={todoItem.completionDate}
+                  onChange={selectedDate => { setTodoItem({ ...todoItem, completionDate: (selectedDate || Today) }) }}
                 />
               )}
             </div>
             <textarea id="textarea"
-              value={props.todoItem.todoText}
+              value={todoItem.todoText}
               onChange={(e) => {
-                if (e.target.value.length >= 100) { props.setErrorMessage("100文字以内に修正してください。") }
-                props.setTodoItem({ ...props.todoItem, todoText: e.target.value })
+                if (e.target.value.length > 100) { setErrorMessage("100文字以内に修正してください。") }
+                else { setErrorMessage(null) }
+                setTodoItem({ ...todoItem, todoText: e.target.value })
               }}
             />
             <br />
-            {props.errorMessage !== null ? <div>{props.errorMessage}</div> : <br />}
-            <button onClick={() => props.putTodoData(props.todoId)}>変更</button>
-            <button onClick={() => props.setId(null)}>キャンセル</button>
+            {errorMessage !== null ? <div>{errorMessage}</div> : <br />}
+            <button onClick={() => putTodoData(todoId)}>変更</button>
+            <button onClick={() => setId(null)}>キャンセル</button>
 
           </div>
         </div >
