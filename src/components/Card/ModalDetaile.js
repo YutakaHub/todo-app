@@ -28,15 +28,15 @@ const ModalDetaile = ({
                   dateFormat="yyyy/MM/dd"
                   minDate={Today}
                   selected={null}
-                  onChange={selectedDate => { setTodoItem({ ...todoItem, completionDate: (selectedDate || Today).toISOString() }) }}
+                  onChange={selectedDate => { setTodoItem({ ...todoItem, completionDate: (selectedDate || Today) }) }}
                 />
               ) : (
                 <DatePicker
                   id="datePicker"
                   dateFormat="yyyy/MM/dd"
                   minDate={Today}
-                  selected={new Date(todoItem.completionDate)}
-                  onChange={selectedDate => { setTodoItem({ ...todoItem, completionDate: (selectedDate || Today).toISOString() }) }}
+                  selected={todoItem.completionDate}
+                  onChange={selectedDate => { setTodoItem({ ...todoItem, completionDate: (selectedDate || Today) }) }}
                 />
               )}
             </div>

@@ -28,6 +28,7 @@ function App() {
 
   useEffect(() => {
     getTodoTestData();
+    console.log(todoData)
   }, [])
 
 
@@ -56,7 +57,15 @@ function App() {
       setConnecting(false);
       setErrorMessage("データが取得できませんでした。");
     } else {
-      setTodoData(res)
+      let value = res.map((x) => {
+        return {
+          ...x,
+          completionDate: x.completionDate ? new Date(x.completionDate) : null,
+          completeDateTime: x.completeDateTime ? new Date(x.completeDateTime) : null
+        }
+      })
+      console.log(value)
+      setTodoData(value)
     }
   };
 
@@ -71,7 +80,7 @@ function App() {
       completeFlg: true,
       completeDateTime: new Date(),
     }
-    prams.completionDate = todoItem.completionDate ? new Date(todoItem.completionDate) : null;
+    prams.completionDate = todoItem.completionDate ? todoItem.completionDate : null;
 
     let res = await putTodo(initialURL, prams);
     //エラーの場合のみStatusが設定される。
@@ -88,7 +97,7 @@ function App() {
             completionDate: todo.completionDate,
             todoText: todo.todoText,
             completeFlg: true,
-            completeDateTime: new Date().toISOString()
+            completeDateTime: new Date()
           };
         } else {
           return map;
@@ -123,14 +132,11 @@ function App() {
     if (todoItem.todoText.length <= 100) {
       let prams = {
         id: todoItem.id,
-        completionDate: null,
+        completionDate: todoItem.completionDate,
         todoText: todoItem.todoText,
         completeFlg: todoItem.completeFlg,
-        completeDateTime: null,
+        completeDateTime: todoItem.completeDateTime,
       }
-      prams.completionDate = todoItem.completionDate ? new Date(todoItem.completionDate) : null;
-      prams.completeDateTime = todoItem.completeDateTime ? new Date(todoItem.completeDateTime) : null;
-
       let res = await putTodo(initialURL, prams);
       //エラーの場合のみStatusが設定される。
       const status = res.status;
@@ -164,15 +170,13 @@ function App() {
   const postTodoData = async () => {
     setErrorMessage(null)
     if (todoItem.todoText.length <= 100) {
-
       let prams = {
         id: 0,
-        completionDate: null,
+        completionDate: todoItem.completionDate,
         todoText: todoItem.todoText,
         completeFlg: false,
         completeDateTime: null,
       }
-      prams.completionDate = todoItem.completionDate ? new Date(todoItem.completionDate) : null;
       let res = await postTodo(initialURL, prams)
       //エラーの場合のみStatusが設定される。
       const status = res.status;
