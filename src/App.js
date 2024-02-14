@@ -73,16 +73,15 @@ function App() {
   //Todo完了登録ボタン
   const checkTodoData = async (e, todo) => {
     e.stopPropagation();
-    let prams = {
+    let params = {
       id: todo.id,
-      completionDate: null,
+      completionDate: todoItem.completionDate,
       todoText: todo.todoText,
       completeFlg: true,
       completeDateTime: new Date(),
     }
-    prams.completionDate = todoItem.completionDate ? todoItem.completionDate : null;
 
-    let res = await putTodo(initialURL, prams);
+    let res = await putTodo(initialURL, params);
     //エラーの場合のみStatusが設定される。
     const status = res.status;
     const id = res.id;
@@ -130,14 +129,14 @@ function App() {
   const putTodoData = async () => {
     setErrorMessage(null)
     if (todoItem.todoText.length <= 100) {
-      let prams = {
+      let params = {
         id: todoItem.id,
         completionDate: todoItem.completionDate,
         todoText: todoItem.todoText,
         completeFlg: todoItem.completeFlg,
         completeDateTime: todoItem.completeDateTime,
       }
-      let res = await putTodo(initialURL, prams);
+      let res = await putTodo(initialURL, params);
       //エラーの場合のみStatusが設定される。
       const status = res.status;
       const id = res.id;
@@ -170,14 +169,14 @@ function App() {
   const postTodoData = async () => {
     setErrorMessage(null)
     if (todoItem.todoText.length <= 100) {
-      let prams = {
+      let params = {
         id: 0,
         completionDate: todoItem.completionDate,
         todoText: todoItem.todoText,
         completeFlg: false,
         completeDateTime: null,
       }
-      let res = await postTodo(initialURL, prams)
+      let res = await postTodo(initialURL, params)
       //エラーの場合のみStatusが設定される。
       const status = res.status;
       const id = res.id;
